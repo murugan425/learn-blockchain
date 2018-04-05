@@ -9,10 +9,11 @@ from flask import Flask, jsonify
 
 #PART1: Create a blockchain
 class BlockChain:
+    #Step1: Initialize the chain and create the genesys block
     def __init__(self):
         self.chain = []
         self.create_block(proof = '1', previous_hash = '0')
-        
+    #Step2: Define the create block method and block dictionary variable     
     def create_block(self, proof, previous_hash):
         block = {"index": len(self.chain) + 1,
                  "timestamp": str(datetime.datetime.now()),
@@ -20,10 +21,10 @@ class BlockChain:
                  "previous_hash": previous_hash}
         self.chain.append(block)
         return block
-    
+    #Step3: Function used to get the previous block in the chain 
     def get_prev_block(self):
         return self.chain[-1]
-    
+    #Step4: Define the proof of work logic which the miners needs to solve
     def proof_of_work(self, previous_proof):
         new_proof = 1
         valid_proof = False
@@ -35,12 +36,12 @@ class BlockChain:
             else:
                 new_proof += 1
         return new_proof
-        
+    #Step5: Method used to get the hash key of any given block for validation purpose
     def hash(self, block):
         #check the hashkey of the previous block
         encoded_block = json.dumps(block, sort_keys=True).encode()
         return hashlib.sha256(encoded_block).hexdigest()
-    
+    #Step6: Validate each block in the chain is valid by verifying the previous_hash & proof
     def is_chain_valid(self, chain):
         previous_block = chain[0]
         block_index = 1
@@ -59,6 +60,7 @@ class BlockChain:
             block_index += 1
         return True
 
+#PART2: Mining the Blockchain
 
             
         
