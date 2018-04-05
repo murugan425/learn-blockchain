@@ -12,7 +12,7 @@ class BlockChain:
     #Step1: Initialize the chain and create the genesys block
     def __init__(self):
         self.chain = []
-        self.create_block(proof = '1', previous_hash = '0')
+        self.create_block(proof = 1, previous_hash = '0')
     #Step2: Define the create block method and block dictionary variable     
     def create_block(self, proof, previous_hash):
         block = {"index": len(self.chain) + 1,
@@ -30,7 +30,7 @@ class BlockChain:
         valid_proof = False
         while valid_proof is False:
             #logic inside the sha256 should be non-symmetrical & complex
-            hash_key_number = hashlib.sha256(str(new_proof*3 - previous_proof*2).encode()).hexdigest()
+            hash_key_number = hashlib.sha256(str(new_proof**2 - previous_proof**2).encode()).hexdigest()
             if hash_key_number[:4] == '0000':
                 valid_proof = True
             else:
@@ -53,7 +53,7 @@ class BlockChain:
             #proof of work in each block is valid as per the proof of work pblm
             previous_proof = previous_block['proof']
             proof = block['proof']
-            hash_key_number = hashlib.sha256(str(proof*3 - previous_proof*2).encode()).hexdigest()
+            hash_key_number = hashlib.sha256(str(proof**2 - previous_proof**2).encode()).hexdigest()
             if hash_key_number[:4] != '0000':
                 return False
             previous_block = block
@@ -89,4 +89,4 @@ def get_chain():
                 'length': len(blockchain.chain)}
     return jsonify(response), 200
 
-
+app.run(host = '0.0.0.0', port = 5000, debug=True)
