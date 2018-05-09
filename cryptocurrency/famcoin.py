@@ -62,7 +62,7 @@ class BlockChain:
             previous_block = block
             block_index += 1
         return True
-    #Step2: Method used to add a new transaction to the transaction list 
+    #Step3: Method used to add a new transaction to the transaction list 
     # and returns the block number in which it will be stored
     def add_transactions(self, sender, receiver, amount):
         self.transactions.append({
@@ -72,10 +72,33 @@ class BlockChain:
             })
         previous_block = self.get_prev_block()
         return (previous_block['index'] + 1)
-
+    #Step4: Method used to add a new node to the blockchain
+    def add_nodes(self, address):
+        parsed_url = urlparse(address)
+        self.nodes.add(parsed_url.netloc)
+    # Step5: Consensus Check done to validate if there is any other node in the 
+    # network which has the longest chain than the current node
+    # In that case, the longest chain becomes valid and this node will get 
+    # updated with that chain, based on the prinicple of blockchain
+    # The longest chain in the network always wins
+    def replace_chain(self):
+        network = self.nodes
+        longest_chain = None
+        max_length = len(self.chain)
+        for node in network:
+            response = requests.get(f'http://{node}/get_chain')
+            if response.status_code == 200:
+                length = response.json()['length']
+                chain = response.json()['chain']
+                if length > max_length and self.is_chain_valid(chain):
+                    max_length = length
+                    longest_chain = chain
+        if longest_chain:
+            self.chain = longest_chain
+            return True
+        return False
 #PART2: Mining the Blockchain
 app = Flask(__name__)
-
 
 blockchain = BlockChain()
 
