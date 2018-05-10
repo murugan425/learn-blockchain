@@ -167,5 +167,18 @@ def connect_node():
                 'total_nodes': list(blockchain.nodes)}
     return jsonify(response), 201
 
+#Step10: Request to perform/trigger a consensus check to replace the chain by the longest one in the blockchain
+@app.route("/replace_chain", methods = ['GET'])
+def is_valid():
+    is_chain_replaced = blockchain.replace_chain()
+    if is_chain_replaced:
+        response = {'message' : "The nodes had differet longest chain, so the chain was replaced by that one.", 
+                    'new_chain': blockchain.chain}
+    else:
+        response = {'message' : "The chain is the longest one. All Good.", 
+                    'new_chain': blockchain.chain}
+    return jsonify(response), 200
+
+# Running the app 
 app.run(host = '0.0.0.0', port = 5000, debug=True)
 
