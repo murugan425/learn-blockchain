@@ -153,5 +153,19 @@ def add_transaction():
     response = {'message':f'This transaction will be added in Block#: {index}'}   
     return jsonify(response), 201
 
+#PART3: Decentralizing the blockchain
+#Step9: Connecting new nodes to the blockchian
+@app.route("/connect_node", methods = ['POST'])
+def connect_node():
+    json = request.get_json()
+    nodes = json.get('nodes')
+    if nodes is None:
+        return 'No node detail provide to connect', 400
+    for node in nodes:
+        blockchain.add_nodes(node)
+    response = {'message':'All the nodes are now connected. The Famcoin Blockchain now contains the following nodes:',
+                'total_nodes': list(blockchain.nodes)}
+    return jsonify(response), 201
+
 app.run(host = '0.0.0.0', port = 5000, debug=True)
 
