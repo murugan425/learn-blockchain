@@ -97,8 +97,13 @@ class BlockChain:
             self.chain = longest_chain
             return True
         return False
+
 #PART2: Mining the Blockchain
 app = Flask(__name__)
+
+#Step6: Creating an address for the node on Port 5000. UUID generates random address
+node_address = str(uuid4()).replace('-','')
+mining_reward = 5
 
 blockchain = BlockChain()
 
@@ -109,12 +114,14 @@ def mine_block():
     previous_proof = previous_block['proof']
     proof = blockchain.proof_of_work(previous_proof)
     previous_hash = blockchain.hash(previous_block)
+    blockchain.add_transactions(sender = node_address, receiver = 'Murugan', amount = mining_reward)
     block = blockchain.create_block(proof, previous_hash)
     response = {'message': 'New Block is successfully Mined. Enjoy your reward!',
                 "index": block['index'],
                 "timestamp": block['timestamp'],
                 "proof": block['proof'],
-                "previous_hash": block['previous_hash']}
+                "previous_hash": block['previous_hash'],
+                "transactions": block['transactions']}
     return jsonify(response), 201
 
 # Return the entire full blockchain
