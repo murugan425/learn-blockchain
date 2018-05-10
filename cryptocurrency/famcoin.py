@@ -147,7 +147,7 @@ def is_valid():
 def add_transaction():
     transaction = request.get_json()
     transaction_keys = ['sender', 'receiver', 'amount']
-    if not all (keys in json for key in transaction_keys):
+    if not all (key in json for key in transaction_keys):
         return 'Tranaction data is invalid. Please check your transaction details', 400
     index = blockchain.add_transactions(transaction['sender'], transaction['receiver'], transaction['amount'])
     response = {'message':f'This transaction will be added in Block#: {index}'}   
@@ -169,7 +169,7 @@ def connect_node():
 
 #Step10: Request to perform/trigger a consensus check to replace the chain by the longest one in the blockchain
 @app.route("/replace_chain", methods = ['GET'])
-def is_valid():
+def replace_chain():
     is_chain_replaced = blockchain.replace_chain()
     if is_chain_replaced:
         response = {'message' : "The nodes had differet longest chain, so the chain was replaced by that one.", 
