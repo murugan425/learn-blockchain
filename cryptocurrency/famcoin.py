@@ -108,6 +108,7 @@ mining_reward = 5
 blockchain = BlockChain()
 
 # Mining a new Block
+#Step7: Provide reward to the miner by doing a coin transaction from the node to the miner address.
 @app.route("/mine_block", methods = ['GET'])
 def mine_block():
     previous_block = blockchain.get_prev_block()
@@ -140,6 +141,17 @@ def is_valid():
     else:
         response = {'message' : "The Blockchain is invalid. Please be cautious."}
     return jsonify(response), 200
+
+#Step8: Adding a new transaction to the blockchain
+@app.route("/add_transaction", methods = ['POST'])
+def add_transaction():
+    transaction = request.get_json()
+    transaction_keys = ['sender', 'receiver', 'amount']
+    if not all (keys in json for key in transaction_keys):
+        return 'Tranaction data is invalid. Please check your transaction details', 400
+    index = blockchain.add_transactions(transaction['sender'], transaction['receiver'], transaction['amount'])
+    response = {'message':f'This transaction will be added in Block#: {index}'}   
+    return jsonify(response), 201
 
 app.run(host = '0.0.0.0', port = 5000, debug=True)
 
